@@ -4,42 +4,29 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
+
+	"github.com/ale8k/language_usage_by_so/internal/handlers"
 )
 
-var Handler *http.ServeMux
-
-func logg(h http.Handler) http.Handler {
-	return http.HandlerFunc(
-		func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println("Before")
-			h.ServeHTTP(w, r) // call original
-			fmt.Println("After")
-		})
-}
+var Server *http.Server
 
 func StartServer() {
-	k := logg(nil)
-	fmt.Println(k)
-	Handler := http.NewServeMux()
-
-	// type HandlerFunc func(ResponseWriter, *Request)
-	// internal mux call just casts our func to this ^
-	// func (mux *ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request)) {
-	// 	if handler == nil {
-	// 		panic("http: nil handler")
-	// 	}
-	// 	mux.Handle(pattern, HandlerFunc(handler))
-	// }
-
-	// type Handler interface {
-	// 	ServeHTTP(ResponseWriter, *Request)
-	// }
-
-	server := &http.Server{
-		Addr:    ":9000",
-		Handler: Handler,
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil {
+		port = 9000
 	}
 
-	log.Println("Starting server on port 9000...")
-	log.Fatalf("Server failed to start: %v", server.ListenAndServe())
+	mux := http.NewServeMux()
+
+	Server := &http.Server{
+		Addr:    fmt.Sprintf("%s:%s", "", strconv.Itoa(port)),
+		Handler: mux,
+	}
+
+	handlers.RegisterAllHandlers(mux, Server)
+
+	log.Printf("Starting server on port %v... \n", port)
+	log.Fatalf("Server failed to start: %v", Server.ListenAndServe())
 }
