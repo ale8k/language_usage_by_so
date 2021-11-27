@@ -1,6 +1,8 @@
 package errors
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Handles all error generically, followed by a panic
 func HandleErrFatal(err error) {
