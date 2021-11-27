@@ -1,0 +1,45 @@
+
+version: "3"
+
+networks:
+  lubso:
+    driver: bridge
+
+services:
+  app:
+    image: cosmtrek/air
+    networks:
+      - lubso
+    working_dir: "/usr/src/app"
+    ports:
+      - 8001:8000
+    environment:
+      KAFKA_BROKER_ADDRS: "kafka:9092"
+    volumes:
+      - "./:/usr/src/app"
+
+  kafka:
+    networks:
+      - lubso
+    image: "bitnami/kafka:latest"
+    ports:
+      - "9093:9093"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=DOCKA://:9092,LOCALHOST://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=DOCKA://kafka:9092,LOCALHOST://127.0.0.1:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=DOCKA:PLAINTEXT,LOCALHOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=LOCALHOST
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    networks:
+      - lubso
+    image: "bitnami/zookeeper:latest"
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
