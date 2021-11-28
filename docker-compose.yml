@@ -12,7 +12,7 @@ services:
       - lubso
     working_dir: "/usr/src/app"
     ports:
-      - 8001:8000
+      - 8001:9000
     environment:
       KAFKA_BROKER_ADDRS: "kafka:9092"
     volumes:
@@ -43,3 +43,27 @@ services:
       - "2181:2181"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+
+  grafana:
+    image: grafana/grafana:5.1.0
+    networks:
+      - lubso
+    ports:
+      - 8002:3000
+
+  prometheus:
+    image: prom/prometheus:v2.1.0
+    volumes:
+      - "./prometheus.yml/:/etc/prometheus/prometheus.yml"
+      - "prometheusVol:/prometheus"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - 8003:9090
+    networks:
+      - lubso
+    restart: always
+
+volumes:
+    prometheusVol: {}
+    grafanaVol: {}
