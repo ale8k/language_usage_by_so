@@ -68,7 +68,6 @@ func TestGetCreatedQuestionsSync(t *testing.T) {
 			if err == nil && got.Items[0].QuestionID != tt.want.Items[0].QuestionID {
 				t.Errorf("GetCreatedQuestionsSync() = %v, want %v", got, tt.want)
 			}
-
 		})
 	}
 }
