@@ -46,6 +46,8 @@ services:
 
   grafana:
     image: grafana/grafana:5.1.0
+    volumes:
+      - "./grafana/provisioning:/etc/grafana/provisioning:ro"
     networks:
       - lubso
     ports:
