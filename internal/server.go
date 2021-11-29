@@ -15,8 +15,8 @@ import (
 var Server *http.Server
 
 func StartServer() {
-	// done := make(chan struct{})
-	//go RenameMe(done)
+	done := make(chan struct{})
+	go ProcessAskedQuestions(done, "javascript")
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
 		port = 9000
