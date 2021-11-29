@@ -15,6 +15,7 @@ services:
       - 8001:9000
     environment:
       KAFKA_BROKER_ADDRS: "kafka:9092"
+      PPROF_ENDPOINTS: "true"
     volumes:
       - "./:/usr/src/app"
 
