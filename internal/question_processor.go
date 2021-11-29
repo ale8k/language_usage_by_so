@@ -42,7 +42,7 @@ func parseQueryListToMessages(qryList []SOQuestionItem, mutex *sync.Mutex, ch ch
 		ch <- kafka.Message{
 			Key:   []byte(strconv.Itoa(qryList[i].QuestionID)),
 			Value: data,
-			// Headers: []protocol.Header{},
+			// Headers: []protocol.Header{}, // maybe place tags as headers on here to differentiate / find overlaps?
 		}
 	}
 	mutex.Unlock()
@@ -63,14 +63,16 @@ func divideQuestions(initialSlice []SOQuestionItem, size int) ([][]SOQuestionIte
 			j = len(initialSlice)
 		}
 		// do what do you want to with the sub-slice, here just printing the sub-slices
-		fmt.Println(initialSlice[i:j])
 		final = append(final, initialSlice[i:j])
 		finalIndices += 1
 	}
 	return final, len(final)
 }
 
-func ProcessAskedQuestions(done chan struct{}, tags string) {
+// Ideally need a cache layer to check previous 10 minute of messages
+// and to compare current id, answered and other relevant metadata worth updating
+// and pushing a new message on. For now we just push everything every 10 minutes.
+func ProcessAskedQuestions(done chan struct{}, tags string, collectEvery time.Duration) {
 	date, _ := time.Parse("01-02-2006", time.Now().Format("01-02-2006"))
 	finalDataQueryList := make([]SOQuestionItem, 0)
 	finalDataQueryList, err := queryAllPages(finalDataQueryList, 1, int(date.Unix()), tags)
@@ -92,15 +94,9 @@ func ProcessAskedQuestions(done chan struct{}, tags string) {
 	}
 	wg.Wait()
 	fmt.Printf("Channel size: %v \n", len(parsedMessages))
-	//
 
-	//wg.Wait()
 	//conn, err := kafka.DialLeader(context.Background(), "tcp", "kafka:9092", "test-topic", 0)
-
 	// bytesWritten, err := conn.WriteMessages(msgBatch...)
-
-	// log.Println(bytesWritten)
-
 	// for {
 	// 	select {
 	// 	case <-ticker.C:

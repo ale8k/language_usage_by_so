@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/pprof"
 	"os"
+	"time"
 
 	"strconv"
 
@@ -16,7 +17,7 @@ var Server *http.Server
 
 func StartServer() {
 	done := make(chan struct{})
-	go ProcessAskedQuestions(done, "javascript")
+	go ProcessAskedQuestions(done, "go", time.Duration(time.Minute*10))
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
 		port = 9000

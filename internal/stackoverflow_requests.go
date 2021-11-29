@@ -15,10 +15,11 @@ import (
 var soUrl = url.URL{Scheme: "https", Host: "api.stackexchange.com", Path: "/2.3"}
 
 type SOQuestionResp struct {
-	Items          []SOQuestionItem `json:"items"`
-	HasMore        bool             `json:"has_more"`
-	QuotaMax       int              `json:"quota_max"`
-	QuotaRemaining int              `json:"quota_remaining"`
+	Items    []SOQuestionItem `json:"items"`
+	HasMore  bool             `json:"has_more"`
+	QuotaMax int              `json:"quota_max"`
+	// TODO: Handle remaing == 0
+	QuotaRemaining int `json:"quota_remaining"`
 }
 
 // We're owner, don't need deets on them
