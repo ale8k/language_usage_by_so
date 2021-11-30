@@ -17,38 +17,67 @@ import (
 
 var Server *http.Server
 
-func StartServer() {
+func processorWrapper(topicname string, tags string) {
 	done := make(chan struct{})
 	phpQp := &QuestionProcessor{
 		KafkaWriter: kafka.Writer{
 			Addr:         kafka.TCP("kafka:9092"),
-			Topic:        "php-questions",
+			Topic:        topicname,
 			Balancer:     &kafka.LeastBytes{},
 			MaxAttempts:  30,
 			BatchSize:    5, // what if < 5 were asked?
 			BatchBytes:   1048576,
 			BatchTimeout: time.Duration(time.Second * 5), // we don't care that much honestly
 			ReadTimeout:  10,                             // what is this?
-			WriteTimeout: 10,
+			//WriteTimeout: 10,
 			RequiredAcks: 1,
 			Async:        false,
 			Completion: func(km []kafka.Message, err error) {
 				if err != nil {
 					log.Printf("kafka failed message deliver: %v", err)
+				} else {
+					log.SetPrefix("KAFKA: ")
+					log.Printf("Batch sent successfully of size: %v\n", len(km))
 				}
 			},
 			Compression: compress.Gzip,
-			Logger:      nil,
 			ErrorLogger: kafka.LoggerFunc(func(s string, i ...interface{}) {
 				log.SetPrefix("KAFKA: ")
 				log.Printf("failed, %s, see: %v", s, i)
 			}),
 			// Transport:   nil, create a kafka.Transport for TLS config
 		},
-		Tags:         "php",
+		Tags:         tags,
 		CollectEvery: time.Duration(time.Minute * 10),
 	}
 	go phpQp.ProcessAskedQuestions(done)
+}
+
+func StartServer() {
+	processorWrapper("php-questions", "php")
+	processorWrapper("go-questions", "go")
+	processorWrapper("java-questions", "java")
+	processorWrapper("javascript-questions", "javascript")
+	processorWrapper("typescript-questions", "typescript") // alex: top
+	processorWrapper("nodejs-questions", "node.js")
+	processorWrapper("ruby-questions", "ruby")
+	processorWrapper("python-questions", "python") // chloe: top
+	processorWrapper("csharp-questions", "c#")
+	processorWrapper("dotnet-questions", ".net")
+	processorWrapper("aspnet-questions", "asp.net")
+	processorWrapper("cpp-questions", "c++")
+	processorWrapper("c-questions", "c")
+	processorWrapper("matlab-questions", "matlab")
+	processorWrapper("sql-questions", "sql")
+	processorWrapper("rust-questions", "rust")
+	processorWrapper("haskell-questions", "haskell")
+	processorWrapper("lua-questions", "lua")       // chloe: bottom
+	processorWrapper("elixir-questions", "elixir") // alex: bottom
+	processorWrapper("php-questions", "php")
+	processorWrapper("swift-questions", "swift")
+	processorWrapper("kotlin-questions", "kotlin")
+	processorWrapper("scala-questions", "scala")
+	processorWrapper("html-questions", "html")
 
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {

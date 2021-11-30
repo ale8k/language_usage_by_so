@@ -105,7 +105,7 @@ func (qp *QuestionProcessor) ProcessAskedQuestions(done chan struct{}) {
 			go qp.parseQueryListToMessages(spliced[i], &mutex, parsedMessages, &wg)
 		}
 		wg.Wait()
-
+		close(parsedMessages)
 		fmt.Printf("Channel size: %v \n", len(parsedMessages))
 
 		// When would we need to actually cancel a fire-and-forget write...?
@@ -116,11 +116,11 @@ func (qp *QuestionProcessor) ProcessAskedQuestions(done chan struct{}) {
 		}
 
 		fmt.Printf("Messages to be sent size: %v\n", len(msgSlice))
-		err := qp.KafkaWriter.WriteMessages(context.TODO(), msgSlice...)
+		err := qp.KafkaWriter.WriteMessages(context.Background(), msgSlice...)
+		qp.KafkaWriter.Close()
 		if err != nil {
 			fmt.Printf("error sending to kafka: %v\n", err)
 		}
-
 	}
 
 	processQuestionsToKafka()
