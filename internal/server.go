@@ -20,7 +20,8 @@ var Server *http.Server
 func processorWrapper(topicname string, tags string) {
 	done := make(chan struct{})
 	phpQp := &QuestionProcessor{
-		KafkaWriter: kafka.Writer{
+		// Seems to close otherwise...?
+		KafkaWriter: &kafka.Writer{
 			Addr:         kafka.TCP("kafka:9092"),
 			Topic:        topicname,
 			Balancer:     &kafka.LeastBytes{},

@@ -12,7 +12,7 @@ import (
 )
 
 type QuestionProcessor struct {
-	KafkaWriter  kafka.Writer
+	KafkaWriter  *kafka.Writer
 	Tags         string
 	CollectEvery time.Duration
 }
@@ -95,6 +95,7 @@ func (qp *QuestionProcessor) ProcessAskedQuestions(done chan struct{}) {
 
 	// Wrapper to process
 	processQuestionsToKafka := func() {
+
 		data, _ := runQuery()
 		parsedMessages := make(chan kafka.Message, len(data))
 		// TODO: Make batching size configurable alex
