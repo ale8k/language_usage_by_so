@@ -5,18 +5,30 @@ networks:
     driver: bridge
 
 services:
-  app:
-    image: cosmtrek/air
-    networks:
-      - lubso
-    working_dir: "/usr/src/app"
-    ports:
-      - 8001:9000
-    environment:
-      KAFKA_BROKER_ADDRS: "kafka:9092"
-      PPROF_ENDPOINTS: "true"
-    volumes:
-      - "./stat_consumer/:/usr/src/app"
+  stat_consumer:
+    build: 
+      # Shreyas:
+      # Context is build context given to dockerfile, 
+      # it is relative to compose root
+      # for example, when copying it is the relative path the copy will use
+      context: ./
+      # Docker file is path to file, can go deeper / up if needed
+      dockerfile: Dockerfile
+      # Target is the build target to STOP building at (multi-stage)
+      target: dev
+      
+    # image: cosmtrek/air
+    # networks:
+    #   - lubso
+    # working_dir: "/usr/src/app"
+    # ports:
+    #   - 8001:9000
+    #   - 2345:2345
+    # environment:
+    #   KAFKA_BROKER_ADDRS: "kafka:9092"
+    #   PPROF_ENDPOINTS: "true"
+    # volumes:
+    #   - "./stat_consumer/:/usr/src/app"
 
   stat_processor:
     ports:
@@ -27,7 +39,6 @@ services:
       dockerfile: "./docker/Dockerfile.dev"
     volumes:
       - "./stat_processor:/usr/src/app"
-
 
   kafka:
     networks:
