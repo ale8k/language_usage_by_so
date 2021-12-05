@@ -17,7 +17,7 @@ services:
       KAFKA_BROKER_ADDRS: "kafka:9092"
       PPROF_ENDPOINTS: "true"
     volumes:
-      - "./:/usr/src/app"
+      - "./stat_consumer/:/usr/src/app"
 
   kafka:
     networks:
