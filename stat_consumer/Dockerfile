@@ -1,29 +1,33 @@
+########
+# BASE #
+########
+FROM golang:1.17.3 AS base
+WORKDIR /usr/src/app
+
+#######
+# DEV #
+#######
+FROM base AS dev
+WORKDIR /usr/src/app
+RUN go get -u github.com/cosmtrek/air && go install github.com/go-delve/delve/cmd/dlv@latest
+EXPOSE 9000
+EXPOSE 2345
+
 #########
 # BUILD #
 #########
-FROM golang:1.17.3 AS build
-
+FROM base AS build 
 WORKDIR /usr/src/app
-
-COPY ./go.mod ./
-COPY ./go.sum ./
-COPY ./*.go ./
-
 RUN go mod download
 RUN mkdir ./build
-RUN go build -o ./app
+RUN go build -o ./statconsumer
 
-#######
-# RUN #
-#######
+########
+# PROD #
+########
 FROM alpine:3.15
-
-WORKDIR /app
-
-EXPOSE 8000
-
-COPY --from=build /usr/src/app /app
-
-RUN chmod +x /app/app
-
-ENTRYPOINT ["/app/app"]
+WORKDIR /usr/src/app
+EXPOSE 9000
+COPY --from=build /usr/src/app/statconsumer /usr/src/app/statconsumer
+RUN chmod +x /usr/src/app/statconsumer
+ENTRYPOINT ["/usr/src/app/statconsumer"]
