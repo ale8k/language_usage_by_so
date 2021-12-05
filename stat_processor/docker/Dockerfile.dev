@@ -4,10 +4,6 @@ WORKDIR /usr/src/app
 
 COPY ../ .
 
-RUN npm i
-RUN npm i typescript ts-node nodemon -g
-
-
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]

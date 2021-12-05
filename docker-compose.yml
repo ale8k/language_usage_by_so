@@ -18,17 +18,15 @@ services:
     volumes:
       - "./stat_consumer/:/usr/src/app"
 
-  # stat_processor:
-
-  #   build:
-
-  #     context: "./stat_processor"
-
-  #     dockerfile: "./docker/Dockerfile.dev"
-
-  #   volumes:
-
-  #     - "./stat_processor:/usr/src/app"
+  stat_processor:
+    ports:
+      - 8018:3000
+      - 9229:9229
+    build:
+      context: "./stat_processor"
+      dockerfile: "./docker/Dockerfile.dev"
+    volumes:
+      - "./stat_processor:/usr/src/app"
 
 
   kafka:

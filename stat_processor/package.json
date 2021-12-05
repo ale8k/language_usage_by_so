@@ -7,7 +7,7 @@
     "build": "tsc",
     "test:unit": "jest unit --detectOpenHandles --colors --forceExit",
     "lint": "eslint --fix . --ext .ts",
-    "start:dev": "ts-node src/Main.ts",
+    "start:dev": "node --inspect=0.0.0.0:9229 -r ts-node/register src/Main.ts",
     "dev": "nodemon"
   },
   "repository": {
