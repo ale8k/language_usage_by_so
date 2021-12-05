@@ -32,7 +32,7 @@ func TestGetCreatedQuestionsSync(t *testing.T) {
 			want: &SOQuestionResp{
 				Items: []SOQuestionItem{
 					{
-						QuestionID: 70137427,
+						QuestionID: 70234235,
 					},
 				},
 			},
@@ -64,7 +64,6 @@ func TestGetCreatedQuestionsSync(t *testing.T) {
 				t.Errorf("GetCreatedQuestionsSync() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-
 			if err == nil && got.Items[0].QuestionID != tt.want.Items[0].QuestionID {
 				t.Errorf("GetCreatedQuestionsSync() = %v, want %v", got, tt.want)
 			}
