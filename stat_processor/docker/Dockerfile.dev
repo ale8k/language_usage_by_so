@@ -5,10 +5,9 @@ WORKDIR /usr/src/app
 COPY ../ .
 
 RUN npm i
-RUN npm i typescript -g
-RUN npm run build
+RUN npm i typescript ts-node nodemon -g
 
 
 EXPOSE 3000
 
-CMD ["node", "dist/Main.js"]
+CMD ["npm", "run", "dev"]
