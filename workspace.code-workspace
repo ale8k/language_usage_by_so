@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "stat_consumer"
+		},
+		{
+			"path": "stat_processor"
 		}
 	],
 	"settings": {}
