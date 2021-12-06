@@ -19,6 +19,9 @@ ENTRYPOINT ["air"]
 #########
 FROM base AS build 
 WORKDIR /usr/src/app
+COPY ./go.mod ./
+COPY ./go.sum ./
+COPY ./*.go ./
 RUN go mod download
 RUN mkdir ./build
 RUN go build -o ./statconsumer
