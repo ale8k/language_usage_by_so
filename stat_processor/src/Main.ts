@@ -1,44 +1,23 @@
-import express from "express";
-// import {Kafka} from "kafkajs";
+import express, { Request, Response } from "express";
+import { TopicController } from "./Topic/controllers/TopicController";
+
 // import promClient from "prom-client";
-
-// let k = 100;
-// console.log(k);
-
-// const kafka = new Kafka({
-//     clientId: "stat_processor",
-//     brokers: ["127.0.0.1:9093"]
-// })
-
-// const producer = kafka.producer();
-// const consumer = kafka.consumer({groupId:  "stat_processor"});
-
-// const run = async () => {
-//     await producer.connect();
-
-//     await consumer.connect()
-//     await consumer.subscribe({topic: "python-questions", fromBeginning: true})
-
-//     await consumer.run({
-//         eachMessage: async (message) => {
-//             console.log(message)
-//         }
-//     })
-// }
-
 
 const app =  express();
 
-app.get("/main", (req, res) => {
-    // run()
-    let k = 10;
-    let b = 20;
-    
+app.get("/test", (req, res) => {  
     res.send({message: "Connected to main route"});
 })
+
+app.get("/questions", (req: Request, res: Response) => {
+    // const {topic} = req.query
+    // const data =TopicController.GetDataByTopic(topic)
+
+    res.send({Data: [], message: "Data has been sent"})
+})
+
 
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT)
-console.log("running on some port bro")
+app.listen(PORT, () => console.log(`App has been registered and Listening at PORT ${PORT}`))
